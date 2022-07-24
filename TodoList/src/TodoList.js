@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import './style.css';
-import TodoItem from './TodoItem';
 class TodoList extends Component {
 
 
@@ -12,7 +11,6 @@ class TodoList extends Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleKeyUp = this.handleKeyUp.bind(this);
-        this.handleItemClick = this.handleItemClick.bind(this);
         // 定义两个数据，数据必须在state里面定义
         this.state = {
             inputValue: '',
@@ -22,7 +20,7 @@ class TodoList extends Component {
 
     handleInputChange(e) {
 
-        // 改变数据要通过this.setstate(),里面要传对象，也可以传回调函数
+        // 改变数据要通过this.setstate(),里面要传对象，也可以传回到函数
         this.setState({
             inputValue: e.target.value
         })
@@ -49,19 +47,21 @@ class TodoList extends Component {
     }
 
     getListItems() {
-
         // ES6中对数组循环可以使用map(),参数是一个函数，且map要求必须返回结果
         return this.state.list.map((value, index) => {
-            // 父子组件的概念
-            // 父组件通过属性形式向子组件传值
-            return <TodoItem
-                content={value}
-                index={index}
+            return (
+                <li
+                    // 提高性能
+                    key={index}
 
-                // 提高性能
-                key={index}
-                deleteFunction={this.handleItemClick}
-            />
+                    // 因为每次删除都需要不同的index，所以这个不能放在上面，bind()也可以携带数据当作函数的参数
+                    onClick={this.handleItemClick.bind(this, index)}
+
+                    // 表示对value的内容不要去转义，直接输出到li标签的内部,dangerouslySetInnerHTML的值需要是对象
+                    dangerouslySetInnerHTML={{ __html: value }}
+                >
+                </li>
+            )
         })
     }
     render() {
